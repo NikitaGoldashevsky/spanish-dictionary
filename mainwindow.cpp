@@ -285,9 +285,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
         if (key->key() == 16777220) {
             QString input = ui->SearchLineEdit->text();
 
-            if (FindWord(list, input)) {
+            Word* foundWord = FindWord(list, input);
+            if (foundWord) {
                 qDebug() << "found the word" << input << "in the list";
                 ui->WordsListWidget->setCurrentItem(ui->WordsListWidget->findItems(input, Qt::MatchExactly)[0]);
+                SetCurrentWordLabels(foundWord);
             }
             else {
                 WordList* topicWordsList = GetTopicWords(list, input);

@@ -22,7 +22,7 @@ void TopicWordsWindow::AddWord(const QString& word) {
 void TopicWordsWindow::on_topicWordsList_itemClicked(QListWidgetItem *item) {
     Word* word = FindWord(this->mainWindow->list, item->text());
     qDebug() << word->spanish_word;
-    this->mainWindow->SetCurrentWordLabels(word);// run some main window function to change selected word
+    this->mainWindow->SetCurrentWordLabels(word);
 }
 
 void TopicWordsWindow::SetTitle(const QString& title) {
