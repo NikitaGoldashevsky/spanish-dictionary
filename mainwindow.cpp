@@ -56,8 +56,6 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_menuOptionLoadData_triggered() {
-    //std::string filename;// = "C:\\Users\\nikit\\OneDrive\\Desktop\\data2.txt";
-
     const QString filename = QFileDialog::getOpenFileName(
         this, tr("Open text file"), "", tr("Text file (*.txt)"));
 

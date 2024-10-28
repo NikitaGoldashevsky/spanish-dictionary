@@ -10,6 +10,7 @@
 #include <io.h>
 #include <QDebug>
 #include <QFile>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "Wordlist.h"
@@ -114,17 +115,18 @@ bool WriteData(WordList*& wordList, const QString& filename) {
 
 WordList* ReadData(const QString& filename) {
     QFile file(filename);
+    //bool hasUnexpectedFormatLines = false;
 
     WordList* list = nullptr;
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream stream(&file);
 
-        // Read the first line (or you can loop over multiple lines)
+        int stringNumber = 0;
         while (!stream.atEnd()) {
+            stringNumber++;
             QString line = stream.readLine();
             QStringList parts = line.split(';');
 
-            // Check if the line contains exactly the expected number of parts
             if (parts.size() == 5) {
                 QString spanishWord = parts[0].trimmed();
                 QString russianTranslation = parts[1].trimmed();
@@ -132,7 +134,6 @@ WordList* ReadData(const QString& filename) {
                 QString exampleTranslation = parts[3].trimmed();
                 QString topic = parts[4].trimmed();
 
-                // Output the variables to console (for verification)
                 if (true) {
                     qDebug() << "Spanish Word:" << spanishWord;
                     qDebug() << "Russian Translation:" << russianTranslation;
@@ -144,14 +145,21 @@ WordList* ReadData(const QString& filename) {
 
                 bool added = AddWord(list, new Word {spanishWord, russianTranslation, exampleSentence, exampleTranslation, topic});
                 if (!added) {
-                    qDebug() << "not added " << spanishWord;
+                    QString stringMessage = "";
+                    stringMessage = "Повторное объявление слова " + spanishWord + " в строке под номером " + QString::number(stringNumber) + ".";
+                    QMessageBox::warning(nullptr, QStringLiteral("Ошибка"),
+                                         stringMessage, QMessageBox::Ok);
                 }
             } else {
-                qWarning() << "Unexpected format in line:" << line;
+                QString stringMessage = "";
+                stringMessage = "Некорректный формат данных в строке под номером " + QString::number(stringNumber) + ".";
+                QMessageBox::warning(nullptr, QStringLiteral("Ошибка"),
+                                     stringMessage, QMessageBox::Ok);
+                //qDebug() << "Unexpected format in line:" << line;
             }
         }
 
-        file.close(); // Close the file when done
+        file.close();
     } else {
         qWarning() << "Could not open file for reading:" << file.errorString();
     }
