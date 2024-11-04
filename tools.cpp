@@ -68,13 +68,11 @@ int getIntFromTo(const int n1, const int n2, const QString& query, const QString
 bool correctWord(const QString& language, const QString& input) {
     QString word;
 
-    QString tempInput = input;  // Create a non-const copy
+    QString tempInput = input;
     QTextStream stream(&tempInput);
-      // Use QTextStream to handle QString input
 
     bool correct = true;
 
-    // Read the word from the QTextStream and check if it is the only one
     stream >> word;
     if (!word.isEmpty() && stream.atEnd()) {
         for (const QChar& ch : word) {
@@ -98,26 +96,26 @@ bool correctSentence(const QString& language, const QString& input) {
 
     bool correct = true;
 
+    while (!stream.atEnd()) {
+        QChar ch = stream.read(1)[0]; // Read one character
+
+        if (ch == QChar(' ') || ch == QChar('.') || ch == QChar(',')) {
+            continue;
+        }
+        if ((language == "spanish" && !isQCharSpanish(ch)) ||
+            (language == "russian" && !isQCharRussian(ch))) {
+            correct = false;
+            break;
+        }
+    }
+
     return correct;
-
-    // std::QChar ch;
-    // while ((ch = stream.read) != WEOF) {
-
-    //     if (ch == L' ' || ch == L'.' || ch == L',') {
-    //         continue;
-    //     }
-    //     if (language == "spanish" && !isQCharSpanish(ch) ||
-    //         language == "russian" && !isQCharRussian(ch)) {
-    //         correct = false;
-    //         break;
-    //     }
-    // }
-
-    // return correct;
 }
 
 bool isQCharEnglish(const QChar ch) {
-    return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
+    bool res;
+    res = (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
+    return res;
 }
 // ñ
 // ¿ ¡
@@ -126,19 +124,21 @@ bool isQCharEnglish(const QChar ch) {
 bool isQCharSpanish(const QChar ch) {
     QString spanishUniqueSymbols("ñÑ¿¡áéíóúü");
     for (const QChar sym : spanishUniqueSymbols) {
-        if (sym == ch || isQCharEnglish(ch)) {
+        if (sym == ch) {
             return true;
         }
     }
-    return isQCharEnglish(ch);// || ch == L'ñ' || ch == L'Ñ' || ch == L'¿';  //
+    return isQCharEnglish(ch);
 }
 
 bool isQCharRussian(const QChar ch) {
-    return (ch >= QChar(0x0410) && ch <= QChar(0x042F)) || // Uppercase А-Я
-           (ch >= QChar(0x0430) && ch <= QChar(0x044F)); // Lowercase а-я
+    bool res;
+    res = (ch >= QChar(0x0410) && ch <= QChar(0x042F)) || // Uppercase А-Я
+          (ch >= QChar(0x0430) && ch <= QChar(0x044F)); // Lowercase а-я
+    return res;
 }
 
-void UpdateLastLoadFilePath(const QString& newFilePath) {
+void updateLastLoadFilePath(const QString& newFilePath) {
     QFile file("lastLoadFilePath.txt");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qDebug() << "Could not open file for writing:" << file.errorString();

@@ -30,4 +30,4 @@ bool isQCharSpanish(const QChar ch);
 
 bool isQCharRussian(const QChar ch);
 
-void UpdateLastLoadFilePath(const QString& newFilePath);
+void updateLastLoadFilePath(const QString& newFilePath);

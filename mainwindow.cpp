@@ -63,7 +63,7 @@ void MainWindow::on_menuOptionLoadData_triggered() {
         list = ReadData(filename);
 
         UpdateListWidget();
-        UpdateLastLoadFilePath(filename);
+        updateLastLoadFilePath(filename);
         SetTitlePrefixByFilepath(filename);
 
         this->topicWordsWindow->SetListByTopic(this->topicWordsWindow->topic);
@@ -81,7 +81,7 @@ void MainWindow::on_menuOptionSaveData_triggered() {
     QString filename;
     if (dialog.exec()) {
         filename = dialog.selectedFiles().first();
-        UpdateLastLoadFilePath(filename);
+        updateLastLoadFilePath(filename);
         WriteData(list, filename);
     }
 }
@@ -104,7 +104,7 @@ void MainWindow::UpdateListWidget() {
 
 void MainWindow::on_WordsListWidget_itemClicked(QListWidgetItem *item)
 {
-    Word* currentWord = FindWord(list,item->text());
+    Word* currentWord = FindWord(list, item->text());
     SetCurrentWordLabels(currentWord);
 }
 
@@ -137,8 +137,6 @@ void MainWindow::on_menuOptionAddWord_triggered() {
             // qDebug() << correctWord("russian", topic);
             // qDebug() << QString::fromStdString("\n");
 
-            // проблема с русскими словами и предложениями - всегда выводит false
-
             if (correctWord("spanish", spanishWord) &&
                 correctWord("russian", translation) &&
                 correctSentence("spanish", example) &&
@@ -161,7 +159,6 @@ void MainWindow::on_menuOptionAddWord_triggered() {
                     stringMessage += "Слово \"" + spanishWord + "\" уже есть в словаре!";
                     QMessageBox::warning(this, "Ошибка",
                                          stringMessage, QMessageBox::Ok);
-                    //(FindWord(list, spanishWord) == nullptr)
                 }
             }
             else {

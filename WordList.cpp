@@ -198,17 +198,14 @@ WordList* ReadData(const QString& filename) {
 // }
 
 WordList* SortedMerge(WordList*& a, WordList*& b, const bool byTopic) {
-    // base cases
     if (a == nullptr)
         return b;
     if (b == nullptr) {
         return a;
     }
 
-    // final list
     WordList* result = nullptr;
 
-    // elements comparasion and recursive merge
     if ((a->word->spanish_word <= b->word->spanish_word) && !byTopic ||
         a->word->topic <= b->word->topic && byTopic) {
         result = a;
@@ -227,7 +224,6 @@ void SplitList(WordList*& source, WordList*& frontRef, WordList*& backRef, const
     WordList* slow = source;
     WordList* fast = source->pNext;
 
-    // Fast, slow
     while (fast != nullptr) {
         fast = fast->pNext;
         if (fast != nullptr) {
@@ -236,7 +232,6 @@ void SplitList(WordList*& source, WordList*& frontRef, WordList*& backRef, const
         }
     }
 
-    // Slow                        
     frontRef = source;
     backRef = slow->pNext;
     slow->pNext = nullptr;
