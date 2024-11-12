@@ -282,21 +282,23 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
 
             Word* foundWord = FindWord(list, input);
             if (foundWord) {
-                qDebug() << "found the word" << input << "in the list";
+                // qDebug() << "found the word" << input << "in the list";
                 ui->WordsListWidget->setCurrentItem(ui->WordsListWidget->findItems(input, Qt::MatchExactly)[0]);
                 SetCurrentWordLabels(foundWord);
             }
             else {
                 WordList* topicWordsList = GetTopicWords(list, input);
 
-                if (!topicWordsList) {
+                if (topicWordsList) {
+                    this->topicWordsWindow->show();
+                    this->topicWordsWindow->SetTitle(input[0].toUpper() + input.right(input.size()-1));
+                    this->topicWordsWindow->SetListByTopic(input);
+                    this->topicWordsWindow->SetTopic(input);
+                }
+                else {
+                    QMessageBox::warning(this, "Поиск", "Слова по указанному запросу не найдены.", QMessageBox::Ok);
                     return false;
                 }
-
-                this->topicWordsWindow->show();
-                this->topicWordsWindow->SetTitle(input[0].toUpper() + input.right(input.size()-1));
-                this->topicWordsWindow->SetListByTopic(input);
-                this->topicWordsWindow->SetTopic(input);
             }
         }
     }

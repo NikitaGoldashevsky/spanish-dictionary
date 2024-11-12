@@ -13,7 +13,6 @@ extern const int SLEEP_TIME_BETWEEN_WORDS;
 extern const int SLEEP_TIME_BETWEEN_ACTIONS;
 
 
-
 int getInt(const QString& = "", const QString& = "");
 
 int getIntFromTo(const int, const int, const QString& = "", const QString& = "");
