@@ -142,19 +142,18 @@ void MainWindow::on_menuOptionAddWord_triggered() {
                 correctSentence("spanish", example) &&
                 correctSentence("russian", exampleTranslation) &&
                 correctWord("russian", topic)) {
-                bool added = AddWord(list, new Word {
-                                               spanishWord,
-                                               translation,
-                                               example,
-                                               exampleTranslation,
-                                               topic
-                                           });
+
+                Word* newWord = new Word {spanishWord, translation, example, exampleTranslation, topic};
+                bool added = AddWord(list, newWord);
 
                 if (added) {
                     UpdateListWidget();
+                    SetCurrentWordLabels(newWord);
+                    ui->WordsListWidget->setCurrentItem(ui->WordsListWidget->findItems(spanishWord, Qt::MatchExactly)[0]);
                     return;
                 }
                 else {
+                    delete newWord;
                     QString stringMessage = "";
                     stringMessage += "Слово \"" + spanishWord + "\" уже есть в словаре!";
                     QMessageBox::warning(this, "Ошибка",
@@ -230,19 +229,21 @@ void MainWindow::on_menuOptionEditWord_triggered() {
         return;
     }
 
+    Word* curWord;
+
     while (true) {
         EditWordDialog dialog(this);
 
         const auto dialogExec = dialog.exec();
         if (dialogExec != QDialog::Accepted) {
-            break;
+            return;
         }
 
         const QString fieldType = dialog.GetFieldType();
         const QString fieldValue = dialog.GetFieldValue();
 
         QString spanishWord = ui->WordsListWidget->currentItem()->text();
-        Word* word = FindWord(list, spanishWord);
+        curWord = FindWord(list, spanishWord);
 
         if (fieldValue.isEmpty()) {
             QMessageBox::warning(this, "Ошибка", "Значение поля не может быть пустым!", QMessageBox::Ok);
@@ -252,7 +253,7 @@ void MainWindow::on_menuOptionEditWord_triggered() {
                 QMessageBox::warning(this, "Ошибка", "Это слово уже есть в словаре!", QMessageBox::Ok);
             }
             else {
-                bool edited = EditWord(word, fieldType, fieldValue);
+                bool edited = EditWord(curWord, fieldType, fieldValue);
                 if (edited) {
                     break;
                 }
@@ -264,6 +265,8 @@ void MainWindow::on_menuOptionEditWord_triggered() {
     }
 
     UpdateListWidget();
+    SetCurrentWordLabels(FindWord(list, curWord->spanish_word));
+    ui->WordsListWidget->setCurrentItem(ui->WordsListWidget->findItems(curWord->spanish_word, Qt::MatchExactly)[0]);
 }
 
 
